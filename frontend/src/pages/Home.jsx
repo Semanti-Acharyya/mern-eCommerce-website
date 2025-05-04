@@ -1,6 +1,7 @@
 import React from "react";
 import Hero from "../components/Hero";
 import LatestCollection from "../components/LatestCollection";
+import BestSellers from "../components/BestSellers";
 
 const Home = () => {
   return (
@@ -8,6 +9,7 @@ const Home = () => {
       {/* Mounting each components */}
       <Hero />
       <LatestCollection />
+      <BestSellers />
     </div>
   );
 };
