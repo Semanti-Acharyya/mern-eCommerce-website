@@ -10,6 +10,7 @@ const Collection = () => {
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
+  const [sortType, setSortType] = useState("relevant");
 
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
@@ -27,6 +28,7 @@ const Collection = () => {
     }
   };
 
+  // function to handle the logic to filtering product category & sub-category
   const applyFilter = () => {
     // storing a copy of the all in productsCopy
     let productsCopy = products.slice();
@@ -45,13 +47,40 @@ const Collection = () => {
     setFilterProducts(productsCopy);
   };
 
-  useEffect(() => {
-    setFilterProducts(products);
-  }, []);
+  // function to handle the logic to sorting feature
+  const sortProduct = () => {
+    // storing a copy of filtered products in fpCopy
+    let fpCopy = filterProducts.slice();
+
+    switch (sortType) {
+      case "low-high":
+        // This is a sorting function. It compares two product objects a and b:
+
+        // If a.price < b.price, it returns a negative number → a comes before b.
+
+        // If a.price > b.price, it returns a positive number → a comes after b.
+
+        //  If they're equal, they stay in the same order
+        setFilterProducts(fpCopy.sort((a, b) => a.price - b.price));
+        break;
+
+      case "high-low":
+        setFilterProducts(fpCopy.sort((a, b) => b.price - a.price));
+        break;
+
+      default:
+        applyFilter();
+        break;
+    }
+  };
 
   useEffect(() => {
     applyFilter();
   }, [category, subCategory]);
+
+  useEffect(() => {
+    sortProduct();
+  }, [sortType]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
@@ -162,7 +191,10 @@ const Collection = () => {
           <Title text1={"ALL"} text2={"COLLECTIONS"} />
 
           {/* Product sorting functionality */}
-          <select className="border-2 border-gray-300 text-sm px-2">
+          <select
+            onChange={(e) => setSortType(e.target.value)}
+            className="border-2 border-gray-300 text-sm px-2"
+          >
             <option value="relevant">Sort by: Relevant</option>
             <option value="low-high">Sort by: Low to High</option>
             <option value="high-low">Sort by: High to Low</option>
