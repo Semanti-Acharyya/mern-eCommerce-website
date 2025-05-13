@@ -8,10 +8,50 @@ const Collection = () => {
   const { products } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [subCategory, setSubCategory] = useState([]);
+
+  const toggleCategory = (e) => {
+    if (category.includes(e.target.value)) {
+      setCategory((prev) => prev.filter((item) => item !== e.target.value));
+    } else {
+      setCategory((prev) => [...prev, e.target.value]);
+    }
+  };
+
+  const toggleSubCategory = (e) => {
+    if (subCategory.includes(e.target.value)) {
+      setSubCategory((prev) => prev.filter((item) => item !== e.target.value));
+    } else {
+      setSubCategory((prev) => [...prev, e.target.value]);
+    }
+  };
+
+  const applyFilter = () => {
+    // storing a copy of the all in productsCopy
+    let productsCopy = products.slice();
+    if (category.length > 0) {
+      productsCopy = productsCopy.filter((item) =>
+        category.includes(item.category)
+      );
+    }
+
+    if (subCategory.length > 0) {
+      productsCopy = productsCopy.filter((item) =>
+        subCategory.includes(item.subCategory)
+      );
+    }
+
+    setFilterProducts(productsCopy);
+  };
 
   useEffect(() => {
     setFilterProducts(products);
   }, []);
+
+  useEffect(() => {
+    applyFilter();
+  }, [category, subCategory]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
@@ -40,17 +80,35 @@ const Collection = () => {
           <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
             {/* First Category */}
             <p className="flex gap-2">
-              <input className="w-3" type="checkbox" value={"Men"} /> Men
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Men"}
+                onChange={toggleCategory}
+              />{" "}
+              Men
             </p>
 
             {/* Second Category */}
             <p className="flex gap-2">
-              <input className="w-3" type="checkbox" value={"Women"} /> Women
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Women"}
+                onChange={toggleCategory}
+              />{" "}
+              Women
             </p>
 
             {/* Third Category */}
             <p className="flex gap-2">
-              <input className="w-3" type="checkbox" value={"Kids"} /> Kids
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Kids"}
+                onChange={toggleCategory}
+              />{" "}
+              Kids
             </p>
           </div>
         </div>
@@ -63,21 +121,36 @@ const Collection = () => {
         >
           <p className="mb-3 text-sm font-medium">TYPE</p>
           <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
-            {/* First Category */}
+            {/* First sub category */}
             <p className="flex gap-2">
-              <input className="w-3" type="checkbox" value={"Topwear"} />{" "}
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Topwear"}
+                onChange={toggleSubCategory}
+              />{" "}
               Topwear
             </p>
 
-            {/* Second Category */}
+            {/* Second sub category */}
             <p className="flex gap-2">
-              <input className="w-3" type="checkbox" value={"Bottomwear"} />{" "}
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Bottomwear"}
+                onChange={toggleSubCategory}
+              />{" "}
               Bottomwear
             </p>
 
-            {/* Third Category */}
+            {/* Third sub category */}
             <p className="flex gap-2">
-              <input className="w-3" type="checkbox" value={"Winterwear"} />{" "}
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Winterwear"}
+                onChange={toggleSubCategory}
+              />{" "}
               Winterwear
             </p>
           </div>
