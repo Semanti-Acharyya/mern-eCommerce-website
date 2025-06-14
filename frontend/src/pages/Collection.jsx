@@ -5,7 +5,7 @@ import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
 
 const Collection = () => {
-  const { products } = useContext(ShopContext);
+  const { products, search, showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
@@ -32,6 +32,14 @@ const Collection = () => {
   const applyFilter = () => {
     // storing a copy of the all in productsCopy
     let productsCopy = products.slice();
+    if (showSearch && search) {
+      // making product name & search query lowercase
+      // and searching if the search query exists in productsCopy and filtering them
+      productsCopy = productsCopy.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
     if (category.length > 0) {
       productsCopy = productsCopy.filter((item) =>
         category.includes(item.category)
@@ -74,9 +82,10 @@ const Collection = () => {
     }
   };
 
+  // applyFilter() will be called every time any of these values change: category, subCategory, search, showSearch
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory]);
+  }, [category, subCategory, search, showSearch]);
 
   useEffect(() => {
     sortProduct();
