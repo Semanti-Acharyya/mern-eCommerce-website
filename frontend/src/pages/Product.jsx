@@ -1,7 +1,107 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
+import { assets } from "../assets/assets";
 
 const Product = () => {
-  return <div></div>;
+  const { productId } = useParams();
+  const { products, currency } = useContext(ShopContext);
+  const [productData, setProductData] = useState(null);
+  const [image, setImage] = useState("");
+  const [size, setSize] = useState("");
+
+  useEffect(() => {
+    const item = products.find((item) => item._id === productId);
+    if (item) {
+      setProductData(item);
+      setImage(item.image[0]);
+    }
+  }, [productId, products]);
+
+  return productData ? (
+    <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
+      <div className="flex gap-12 flex-col sm:flex-row sm:gap-12">
+        {/* render product details here */}
+
+        {/* ------------- Product Data ---------------- */}
+
+        {/* ------------- Product Images ---------------- */}
+        <div className="flex-1 flex flec-col-reverse gap-3 sm:flex-row">
+          <div className="flex flex-col overflow-x-auto justify-between sm:justify-normal sm:w-[18.7%] w-full">
+            {productData.image.map((img, index) => (
+              <img
+                onClick={() => setImage(img)}
+                key={index}
+                className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
+                src={img}
+                alt={`Product ${index + 1}`}
+              />
+            ))}
+          </div>
+          <div className="w-full sm:w-[80%]">
+            <img className="w-full h-auto" src={image} alt="" />
+          </div>
+        </div>
+
+        {/* ------------------ Product Details -------------------------- */}
+        <div className="flex-1">
+          <h1 className="font-medium text-2xl mt-2">{productData.name}</h1>
+
+          {/* ------------------- Product Reviews --------------------- */}
+          <div className="flex items-center gap-1 mt-2">
+            <img src={assets.star_icon} alt="" className="w-3 5" />
+            <img src={assets.star_icon} alt="" className="w-3 5" />
+            <img src={assets.star_icon} alt="" className="w-3 5" />
+            <img src={assets.star_icon} alt="" className="w-3 5" />
+            <img src={assets.star_dull_icon} alt="" className="w-3 5" />
+            {/* no of reviews */}
+            <p className="pl-2">(122)</p>
+
+            {/* ---------------- Product Price -------------------------- */}
+          </div>
+          <p className="mt-5 text-3xl font-medium">
+            {currency}
+            {productData.price}
+          </p>
+          <p className="mt-5 text-gray-500 md:w-4/5">
+            {productData.description}
+          </p>
+
+          {/* ------------------- Product Size selection --------------------- */}
+          <div className="flex flex-col gap-4 my-8">
+            <p>Select Size</p>
+            <div className="flex gap-2">
+              {/* 'sizes' is an array so we are using map() to represent each size*/}
+              {productData.sizes.map((item, index) => (
+                <button
+                  onClick={() => setSize(item)}
+                  className={`border border-gray-100 py-2 px-4 bg-gray-100 ${
+                    item === size ? "border-orange-300" : ""
+                  }`}
+                  key={index}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* -------------------- Add to Cart --------------------- */}
+          <button className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700">
+            ADD TO CART
+          </button>
+          <hr className="mt-8 sm:w-4/5" />
+          <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
+            <p>100% Original Product.</p>
+            <p> Cash on Delivery (COD) Available.</p>
+            <p>7 days easy return and exchange policies.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div className="opacity-0">Loading...</div>
+  );
 };
 
 export default Product;
