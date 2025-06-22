@@ -19,6 +19,29 @@ const Orders = () => {
           >
             <div className="flex items-start gap-4 text-sm">
               <img className="w-16 sm:w-20" src={item.image[0]} alt="" />
+              <div className="sm:text-base font-medium">
+                <p>{item.name}</p>
+                <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
+                  <p className="text-lg">
+                    {currency}
+                    {item.price}
+                  </p>
+                  <p>Quantity: 1</p>
+                  <p>Size: L</p>
+                </div>
+                <p className="mt-5">
+                  Date: <span className="text-gray-500">20, May, 2025</span>
+                </p>
+              </div>
+            </div>
+            <div className="md:w-1/2 flex justify-between">
+              <div className="flex items-center gap-2">
+                <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
+                <p className="text:sm md:text-base">Ready to Ship</p>
+              </div>
+              <button className="bg-black text-white px-3 py-3 rounded-sm">
+                Track Your Order
+              </button>
             </div>
           </div>
         ))}
