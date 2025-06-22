@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { products } from "../assets/assets";
+import { toast } from "react-toastify";
 
 export const ShopContext = createContext();
 
@@ -14,7 +15,13 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
 
   const addToCart = async (ItemId, size) => {
+    if (!size) {
+      toast.error("Select product size to add it to cart!");
+      return;
+    }
+
     let cartData = structuredClone(cartItems);
+
     if (cartData[ItemId]) {
       if (cartData[ItemId][size]) {
         cartData[ItemId][size] += 1; // increment quantity if item already exists
