@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
+import RelatedProducts from "../components/RelatedProducts";
 
 const Product = () => {
   const { productId } = useParams();
@@ -98,6 +99,32 @@ const Product = () => {
           </div>
         </div>
       </div>
+
+      {/* ---------------- Description & Customer Reviews ---------------- */}
+      <div className="mt-20">
+        <div className="flex ">
+          <b className="border px-5 py-3 text-sm">Description</b>
+          <p className="border px-5 py-3 text-sm">Customer Reviews (122)</p>
+        </div>
+        <div className="flex flex-col gap-4 border px-4 py-6 text-sm text-gray-500">
+          <p>
+            An online e-commerce platform is a digital system that enables
+            businesses to sell products or services to customers over the
+            internet.
+          </p>
+          <p>
+            An e-commerce website typically includes features like product
+            listings, a shopping cart, secure payment gateways, and order
+            tracking to facilitate online transactions.
+          </p>
+        </div>
+      </div>
+
+      {/* ---------------- Display Related Products ---------------- */}
+      <RelatedProducts
+        category={productData.category}
+        subCategory={productData.subCategory}
+      />
     </div>
   ) : (
     <div className="opacity-0">Loading...</div>
