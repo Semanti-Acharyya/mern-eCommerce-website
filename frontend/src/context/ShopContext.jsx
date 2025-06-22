@@ -35,9 +35,51 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
   };
 
+  const getCartItemsCount = () => {
+    let totalCount = 0;
+    for (const items in cartItems) {
+      for (const item in cartItems[items]) {
+        try {
+          if (cartItems[items][item] > 0) {
+            totalCount += cartItems[items][item];
+          }
+        } catch (error) {}
+      }
+    }
+    return totalCount;
+  };
+
+  const updateQuantity = async (ItemId, size, quantity) => {
+    let cartData = structuredClone(cartItems);
+
+    cartData[ItemId][size] = quantity;
+
+    setCartItems(cartData);
+  };
+
   useEffect(() => {
     console.log(cartItems);
   }, [cartItems]);
+
+  const getCartAmount = () => {
+    let totalAmount = 0;
+    for (const items in cartItems) {
+      const itemInfo = products.find((product) => product._id === items);
+      if (!itemInfo) continue; // skip if product not found
+
+      for (const item in cartItems[items]) {
+        try {
+          if (cartItems[items][item] > 0) {
+            totalAmount += cartItems[items][item] * itemInfo.price;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+    return totalAmount;
+  };
 
   // adding the variables/state variables here to acess it anywhere in the program
   const value = {
@@ -50,6 +92,9 @@ const ShopContextProvider = (props) => {
     setShowSearch,
     cartItems,
     addToCart,
+    getCartItemsCount,
+    updateQuantity,
+    getCartAmount,
   };
 
   return (
