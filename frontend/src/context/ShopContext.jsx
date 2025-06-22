@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { products } from "../assets/assets";
 
 export const ShopContext = createContext();
@@ -8,6 +8,29 @@ const ShopContextProvider = (props) => {
   const delivery_fee = 10;
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  // initialize with an empty object insead of an empty array
+  // because we will store cart items as key-value pairs
+  // where key is the product id and value is the quantity
+  const [cartItems, setCartItems] = useState({});
+
+  const addToCart = async (ItemId, size) => {
+    let cartData = structuredClone(cartItems);
+    if (cartData[ItemId]) {
+      if (cartData[ItemId][size]) {
+        cartData[ItemId][size] += 1; // increment quantity if item already exists
+      } else {
+        cartData[ItemId][size] = 1; // add new size with quantity 1
+      }
+    } else {
+      cartData[ItemId] = {};
+      cartData[ItemId][size] = 1; // add new item with size and quantity 1
+    }
+    setCartItems(cartData);
+  };
+
+  useEffect(() => {
+    console.log(cartItems);
+  }, [cartItems]);
 
   // adding the variables/state variables here to acess it anywhere in the program
   const value = {
@@ -18,6 +41,8 @@ const ShopContextProvider = (props) => {
     setSearch,
     showSearch,
     setShowSearch,
+    cartItems,
+    addToCart,
   };
 
   return (
