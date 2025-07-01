@@ -66,18 +66,42 @@ const addProduct = async (req, res) => {
     res.json({ sucess: true, message: "Product added successfully" });
   } catch (error) {
     console.log(error);
-
     res.json({ success: false, message: error.message });
   }
 };
 
 // function to list all products
-const listProducts = async (req, res) => {};
+const listProducts = async (req, res) => {
+  try {
+    const products = await productModel.find({}); // find all products in the database
+    res.json({ success: true, products }); // send the products array as response
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 // function to remove product
-const removeProduct = async (req, res) => {};
+const removeProduct = async (req, res) => {
+  try {
+    await productModel.findByIdAndDelete(req.body.id); // find the product by id and delete it
+    res.json({ success: true, message: "Product removed successfully" }); // send success response
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 // function to list single product's info
-const singleProduct = async (req, res) => {};
+const singleProduct = async (req, res) => {
+  try {
+    const { productId } = req.body; // get productId from request body
+    const product = await productModel.findById(productId); // find the product by id
+    res.json({ success: true, product }); // send the product as response
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 export { addProduct, listProducts, removeProduct, singleProduct };
