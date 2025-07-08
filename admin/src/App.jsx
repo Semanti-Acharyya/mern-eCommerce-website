@@ -18,7 +18,7 @@ const App = () => {
   );
 
   useEffect(() => {
-    localStorage.setItem("token", token);
+    if (token) localStorage.setItem("token", token);
   }, [token]);
 
   return (
