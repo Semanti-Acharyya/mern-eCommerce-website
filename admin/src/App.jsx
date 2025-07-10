@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 // we access env variables like this in vite
 // while in node.js, we use process.env.<variable-name>
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
+export const currency = "$";
 
 const App = () => {
   const [token, setToken] = useState(
