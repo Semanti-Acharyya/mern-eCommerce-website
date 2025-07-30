@@ -1,13 +1,70 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
+import { ShopContext } from "../context/ShopContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Login = () => {
-  const [currentState, setCurrentState] = useState("Sign Up");
+  const [currentState, setCurrentState] = useState("Login");
+  const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+
+  // State variables for form inputs
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const onSubmitHandler = async (event) => {
     // doing this to prevent the default form submission behavior
     event.preventDefault();
+    try {
+      // if the current state is "Sign Up", we will register the user
+      if (currentState === "Sign Up") {
+        const response = await axios.post(backendUrl + "/api/users/register", {
+          name,
+          email,
+          password,
+        });
+        // if the response is successful, we will set the token and navigate to the home page
+        if (response.data.success) {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+        }
+        // if the response is not successful, we will show an error message
+        else {
+          // toast.error("User already exists or invalid credentials!");
+          toast.error(error.message);
+        }
+      }
+      // if the current state is "Login", we will log in the user
+      else {
+        const response = await axios.post(backendUrl + "/api/users/login", {
+          email,
+          password,
+        });
+        // if the response is successful, we will set the token and navigate to the home page
+        if (response.data.success) {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+        }
+        // if the response is not successful, we will show an error message
+        else {
+          // toast.error("Invalid credentials!");
+          toast.error(error.message);
+        }
+      }
+    } catch (error) {
+      // if there is an error, we will show an error message
+      console.log(error);
+      toast.error(error.message);
+    }
   };
+
+  useEffect(() => {
+    // if the token is set, we will navigate to the home page
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
 
   return (
     <form
@@ -22,6 +79,8 @@ const Login = () => {
         ""
       ) : (
         <input
+          onChange={(e) => setName(e.target.value)}
+          value={name}
           type="text"
           className="w-full px-3 py-2 border border-gray-800"
           placeholder="Name"
@@ -29,12 +88,16 @@ const Login = () => {
         />
       )}
       <input
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
         type="email"
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Email Address"
         required
       />
       <input
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
         type="password"
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Password"

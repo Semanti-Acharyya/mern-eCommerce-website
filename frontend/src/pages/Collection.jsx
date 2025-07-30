@@ -85,7 +85,7 @@ const Collection = () => {
   // applyFilter() will be called every time any of these values change: category, subCategory, search, showSearch
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch]);
+  }, [category, subCategory, search, showSearch, products]);
 
   useEffect(() => {
     sortProduct();

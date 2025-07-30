@@ -1,19 +1,22 @@
 import { createContext, useEffect, useState } from "react";
-import { products } from "../assets/assets";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
   const currency = "$";
   const delivery_fee = 10;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   // initialize with an empty object insead of an empty array
   // because we will store cart items as key-value pairs
   // where key is the product id and value is the quantity
   const [cartItems, setCartItems] = useState({});
+  const [products, setProducts] = useState([]);
+  const [token, setToken] = useState("");
   const navigate = useNavigate();
 
   const addToCart = async (ItemId, size) => {
@@ -83,6 +86,35 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   };
 
+  const getProductsData = async () => {
+    try {
+      console.log("Backend URL is:", backendUrl);
+      const response = await axios.get(backendUrl + "/api/products/list");
+      console.log("Products API response:", response.data);
+      if (response.data.success) {
+        setProducts(response.data.products);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getProductsData();
+  }, []);
+
+  useEffect(() => {
+    // Check if token exists in localStorage and set it to state
+    // we do this to maintain the token state even after page refresh
+    if (!token && localStorage.getItem("token")) {
+      // update the token state from localStorage
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
+
   // adding the variables/state variables here to acess it anywhere in the program
   const value = {
     products,
@@ -98,6 +130,9 @@ const ShopContextProvider = (props) => {
     updateQuantity,
     getCartAmount,
     navigate,
+    backendUrl,
+    token,
+    setToken,
   };
 
   return (
