@@ -110,10 +110,14 @@ const loginAdmin = async (req, res) => {
       email === process.env.ADMIN_EMAIL &&
       password === process.env.ADMIN_PASSWORD
     ) {
-      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+        expiresIn: "30d",
+      });
       res.json({ success: true, token });
     } else {
-      res.json({ success: true, message: "Invalid credentials!" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials!" });
     }
   } catch (error) {
     console.error("Error in user registration:", error);

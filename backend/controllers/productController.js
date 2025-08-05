@@ -33,10 +33,10 @@ const addProduct = async (req, res) => {
         if (!item) return null;
 
         // upload the image to cloudinary and get the url
-        let result_url = await cloudinary.uploader.upload(
-          item.path,
-          (resource_type = "image")
-        );
+        let result_url = await cloudinary.uploader.upload(item.path, {
+          resource_type: "image",
+        });
+
         return result_url.secure_url; // return the secure url of the image
       })
     );
@@ -63,7 +63,7 @@ const addProduct = async (req, res) => {
     const product = new productModel(productData);
     await product.save(); // save the product to the database
 
-    res.json({ sucess: true, message: "Product added successfully" });
+    res.json({ success: true, message: "Product added successfully" });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });

@@ -2,25 +2,31 @@ import jwt from "jsonwebtoken";
 
 const adminAuth = (req, res, next) => {
   try {
-    const { token } = req.headers;
-    if (!token) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.json({
         success: false,
-        message: "Not authorized. Login Again.",
+        message: "Not authorized. Login Again. (Missing header)",
       });
     }
 
+    const token = authHeader.split(" ")[1]; // remove "Bearer "
     const token_decode = jwt.verify(token, process.env.JWT_SECRET);
-    if (token_decode !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
+
+    console.log("Decoded token email:", token_decode.email);
+    console.log("ADMIN_EMAIL from env:", process.env.ADMIN_EMAIL);
+
+    if (token_decode.email !== process.env.ADMIN_EMAIL) {
       return res.json({
         success: false,
-        message: "Not authorized. Login Again.",
+        message: "Not authorized. Login Again. (Email mismatch)",
       });
     }
 
     next();
   } catch (error) {
-    console.log(error);
+    console.log("Auth error:", error);
     res.json({ success: false, message: error.message });
   }
 };
