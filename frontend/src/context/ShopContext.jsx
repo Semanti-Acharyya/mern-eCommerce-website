@@ -38,6 +38,19 @@ const ShopContextProvider = (props) => {
       cartData[ItemId][size] = 1; // add new item with size and quantity 1
     }
     setCartItems(cartData);
+
+    if (token) {
+      try {
+        await axios.post(
+          backendUrl + "/api/cart/add",
+          { itemId: ItemId, size },
+          { headers: { token } }
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
   };
 
   const getCartItemsCount = () => {
@@ -60,6 +73,19 @@ const ShopContextProvider = (props) => {
     cartData[ItemId][size] = quantity;
 
     setCartItems(cartData);
+
+    if (token) {
+      try {
+        await axios.post(
+          backendUrl + "/api/cart/update",
+          { itemId: ItemId, size, quantity },
+          { headers: { token } }
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
   };
 
   useEffect(() => {
@@ -102,6 +128,22 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  const getUserCart = async (token) => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/cart/get",
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        setCartItems(response.data.cartData);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     getProductsData();
   }, []);
@@ -112,6 +154,11 @@ const ShopContextProvider = (props) => {
     if (!token && localStorage.getItem("token")) {
       // update the token state from localStorage
       setToken(localStorage.getItem("token"));
+      // fetch the user cart data from backend
+      // using the token from localStorage
+      // now even when the page is refreshed, the cart data will be same
+      // as it was before the refresh
+      getUserCart(localStorage.getItem("token"));
     }
   }, []);
 

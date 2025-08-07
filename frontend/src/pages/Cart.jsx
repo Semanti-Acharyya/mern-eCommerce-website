@@ -11,20 +11,25 @@ const Cart = () => {
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
-    const tempData = [];
-    for (const items in cartItems) {
-      for (const item in cartItems[items]) {
-        if (cartItems[items][item] > 0) {
-          tempData.push({
-            _id: items,
-            size: item,
-            quantity: cartItems[items][item],
-          });
+    if (products.length > 0) {
+      // Convert cartItems object to an array of objects for easier rendering
+      // Each object will contain _id, size, and quantity properties
+      // This is done to match the structure expected in the Cart component
+      const tempData = [];
+      for (const items in cartItems) {
+        for (const item in cartItems[items]) {
+          if (cartItems[items][item] > 0) {
+            tempData.push({
+              _id: items,
+              size: item,
+              quantity: cartItems[items][item],
+            });
+          }
         }
       }
+      setCartData(tempData);
     }
-    setCartData(tempData);
-  }, [cartItems]);
+  }, [cartItems, products]);
 
   return (
     <div className="border-t pt-14">
@@ -37,6 +42,10 @@ const Cart = () => {
           const productData = products.find(
             (product) => product._id === item._id
           );
+
+          if (!productData) {
+            return null; // Don't render this cart item if the product is missing
+          }
 
           return (
             <div
